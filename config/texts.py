@@ -1,0 +1,1 @@
+willkommen = "Willkommen! Viel Spaß mit der Classic Card."
