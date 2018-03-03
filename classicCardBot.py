@@ -1,3 +1,4 @@
+import os
 import telegram
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -48,7 +49,7 @@ def start(bot,update):
         users.append(messageId)
         writeUser(messageId)
         bot.send_message(chat_id=messageId, text= text.willkommen)
-        sendEventsToUser()
+        #sendEventsToUser()
     else:
         print('User already registered!')
 
@@ -70,7 +71,7 @@ def readInUser():
 
 def writeUser(user):
     file = open(generalConfig.userFile, 'a')
-    file.writelines(str(user))
+    file.writelines('\n' + str(user))
     file.close()
 
 def readEvents():
@@ -81,10 +82,12 @@ def readEvents():
 
 #Event Handling
 def sendEventsToUser():
+    print('start Crawling')
+    os.system('scrapy runspider classicCardCrawler.py --nolog')
     events = readEvents()
     eventsString = '\n\n'.join(events)
     for user in users:
-        bot.send_message(chat_id=user,text=eventsString)
+        bot.send_message(chat_id=str(user),text=eventsString)
 
 def initTimeSchedeling():
     schedule.every().sunday.at("18:00").do(sendEventsToUser)
