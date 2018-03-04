@@ -1,5 +1,5 @@
 import os
-import telegram
+import telegram as telegram
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler, Filters
@@ -7,13 +7,10 @@ import schedule
 import time
 import json
 
-
-
 import config.general as generalConfig
 import config.texts as text
 
 TOKEN = generalConfig.token
-
 
 #initilize the conection to telegram
 def initBot():
@@ -22,7 +19,6 @@ def initBot():
     global dispatcher
 
     bot = telegram.Bot(token=TOKEN)
-
     updater = Updater(bot=bot)
     dispatcher =  updater.dispatcher
 
@@ -60,14 +56,17 @@ def sendAdress(bot,update):
     bot.send_message(chat_id=update.message.chat_id,text="Adresse")
 
 
-
 def readInUser():
-    with open(generalConfig.userFile) as f:
-        global users
-        users = [int(x) for x in f]
-        f.close()
-
-    print(users)
+    with open(generalConfig.userFile,'w') as f:
+        try:
+            global users
+            if(os.stat(generalConfig.userFile).st_size != 0):
+                users = [int(x) for x in f]
+                f.close()
+            else:
+                users = []
+        except:
+            print('create new File')
 
 def writeUser(user):
     file = open(generalConfig.userFile, 'a')
